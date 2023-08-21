@@ -11,7 +11,7 @@ LIBDIR=$PWD
 PLATFORM=linux_x86_64
 BINARY=$LIBDIR/anime4kcpp/build/bin/libac.so
 
-CMAKE_ARGS="-DBuild_CLI=OFF -DBuild_C_wrapper=ON -DBuild_C_wrapper_with_core=ON"
+CMAKE_ARGS="-DBuild_CLI=OFF -DBuild_C_wrapper=ON -DBuild_Static_C_Wrapper -DBuild_C_wrapper_with_core=ON"
 
 if [ "$2" == "cuda" ]; then
 	CMAKE_ARGS="${CMAKE_ARGS} -DEnable_CUDA=ON"
