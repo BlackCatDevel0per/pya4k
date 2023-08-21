@@ -27,7 +27,7 @@ rm -rf $LIBDIR/dist/*.whl
 rm -rf $LIBDIR/dist/*.tar.gz
 
 if [ ! -e $BINARY ]; then
-	git clone -b v2.5.0 https://github.com/TianZerL/Anime4KCPP.git anime4kcpp
+	git clone https://github.com/TianZerL/Anime4KCPP.git anime4kcpp
 
 	mkdir -v anime4kcpp/build
 	cd anime4kcpp/build
