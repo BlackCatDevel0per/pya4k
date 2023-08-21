@@ -1,13 +1,13 @@
-# PyAnime4K
+# PyA4K fork of PyAnime4K with some advantages for python3.8+
 
-PyAnime4K is a simple, fast and powerful Anime4K Python implementation.
+PyA4K is a simple, fast and powerful Anime4K Python implementation.
 
 ## Installation
 ### Pip
-PyAnime4K can be installed easily through `pip`.(recommended for Windows)
+PyA4K can be installed easily through `pip`.(recommended for Windows)
 
 ```shell
-pip install pyanime4k
+pip install pya4k
 ```
 ### Shell script
 For Ubuntu you can also use `setup_wheel_ubuntu.sh` to build wheel file and install it (especially recommended for Google Colab):
@@ -15,20 +15,21 @@ For Ubuntu you can also use `setup_wheel_ubuntu.sh` to build wheel file and inst
 ```
 # For Google Colab, you need to add "!" at the beginning
 # "setup_wheel_ubuntu.sh" need root permission for installing dependency library by apt
-wget https://github.com/TianZerL/pyanime4k/raw/master/setup_wheel_ubuntu.sh && chmod 777 setup_wheel_ubuntu.sh && ./setup_wheel_ubuntu.sh
+wget https://github.com/BlackCatDevel0per/pya4k/raw/master/setup_wheel_ubuntu.sh && chmod 777 setup_wheel_ubuntu.sh && ./setup_wheel_ubuntu.sh
 ```
 ## Manual installation
 
-### Compile Anime4KCPP for pyanime4k
+### Compile Anime4KCPP for pya4k
 1. Clone [Anime4KCPP](https://github.com/TianZerL/Anime4KCPP)
-2. Follow [this](https://github.com/TianZerL/Anime4KCPP/wiki/Building), and for pyanime4k, only core and c wrapper is needed.  Make sure CMake option `Build_C_wrapper` is turned on, and if you want to build core and c wrapper in one file, turned on `Build_C_wrapper_with_core` (recommend)
+2. Follow [this](https://github.com/TianZerL/Anime4KCPP/wiki/Building), and for pya4k, only core and c wrapper is needed.  Make sure CMake option `Build_C_wrapper` is turned on, and if you want to build core and c wrapper in one file, turned on `Build_C_wrapper_with_core` (recommend)
 
-### install pyanime4k
+### install pya4k
+#### (See build_shell.sh script)
 1. Clone the repo   
 2. Download from release or compile the Anime4KCPP core and Anime4KCPP C Wrapper.  
-3. - Copy `ac.dll` and `Anime4KCPPCore.dll` (if turned off Build_C_wrapper_with_core option of Anime4KCPP in CMake) and  `opencv_world440.dll` to the pyanime4k/wrapper (Windows)  
-   - Copy `libac.so` to the pyanime4k/wrapper (Linux)  
-   - Copy `libac.dylib` to the pyanime4k/wrapper (macOS)  
+3. - Copy `ac.dll` and `Anime4KCPPCore.dll` (if turned off Build_C_wrapper_with_core option of Anime4KCPP in CMake) and  `opencv_world440.dll` to the pya4k/wrapper (Windows)  
+   - Copy `libac.so` to the pya4k/wrapper (Linux)  
+   - Copy `libac.dylib` to the pya4k/wrapper (macOS)  
 4. Enjoy  
 
 ## Usages
@@ -39,14 +40,14 @@ wget https://github.com/TianZerL/pyanime4k/raw/master/setup_wheel_ubuntu.sh && c
 # pathlib.Path path objects are recommended instead of strings
 import pathlib
 
-# import pyanime4k library
-import pyanime4k
+# import pya4k library
+import pya4k
 
 # display single image upscaled with Anime4KCPP
-pyanime4k.show_upscaled_image(pathlib.Path('image1.png'))
+pya4k.show_upscaled_image(pathlib.Path('image1.png'))
 
 # upscale a single image
-pyanime4k.upscale_images(pathlib.Path('image1.png'))
+pya4k.upscale_images(pathlib.Path('image1.png'))
 
 # upscale a list of images
 images = [
@@ -54,7 +55,7 @@ images = [
     pathlib.Path('image2.png')
 ]
 
-pyanime4k.upscale_images(
+pya4k.upscale_images(
     input_paths=images,
     output_path=pathlib.Path('./output')
 )
@@ -66,11 +67,11 @@ pyanime4k.upscale_images(
 # pathlib.Path path objects are recommended instead of strings
 import pathlib
 
-# import pyanime4k library
-import pyanime4k
+# import pya4k library
+import pya4k
 
 # upscale a single video file
-pyanime4k.upscale_videos(pathlib.Path('video1.mp4'))
+pya4k.upscale_videos(pathlib.Path('video1.mp4'))
 
 # upscale multiple files
 videos = [
@@ -78,7 +79,7 @@ videos = [
     pathlib.Path('video2.mp4')
 ]
 
-pyanime4k.upscale_videos(
+pya4k.upscale_videos(
     input_paths=videos,
     output_path=pathlib.Path('./output')
 )
@@ -87,7 +88,7 @@ pyanime4k.upscale_videos(
 ### Preview a video with OpenCV
 
 ```python
-from pyanime4k import ac
+from pya4k import ac
 import cv2
 
 video = cv2.VideoCapture(r"F:\Temp\Anime4K\P1-1.m4v")
@@ -111,7 +112,7 @@ while True:
 You can specify GPU for processing if you have more than one GPU
 
 ```python
-from pyanime4k import ac
+from pya4k import ac
 
 # print GPU list to get pID and dID of each GPU
 ac.AC.list_GPUs()
@@ -139,8 +140,8 @@ print(a.get_processor_info())
 You may also create a low-level AC object and handle each of the steps manually.
 
 ```python
-from pyanime4k import ac
-import pyanime4k
+from pya4k import ac
+import pya4k
 
 parameters = ac.Parameters()
 # enable HDN for ACNet
@@ -240,13 +241,13 @@ a.process_with_progress_callback(print_progress)
 a.save_video()
 
 # merge audio and auto delete tmp file
-pyanime4k.migrate_audio_streams("output_tmp.mp4",r"D:\Temp\anime4k\P1-1.m4v","output.mp4")
+pya4k.migrate_audio_streams("output_tmp.mp4",r"D:\Temp\anime4k\P1-1.m4v","output.mp4")
 ```
 
 ### Process a video with OpenCV
 
 ```python
-from pyanime4k import ac
+from pya4k import ac
 import cv2
 import time
 import threading

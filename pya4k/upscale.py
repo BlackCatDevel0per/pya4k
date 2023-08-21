@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from typing import List
 
 
-def _sanitize_input_paths(input_paths: 'Union[str, Path, List[Path]]') -> 'List[Path]':
+def _sanitize_input_paths(input_paths: 'Union[str, Path, List[Union[str, Path]]]') -> 'List[Path]':
     """sanitize input file paths
 
     Args:
@@ -100,7 +100,7 @@ def show_upscaled_image(
 
 
 def upscale_images(
-    input_paths: list,
+    input_paths: 'Union[str, Path, List[Union[str, Path]]]',
     output_suffix: str = "_output",
     output_path: 'Optional[Path]' = None,
     parameters: Parameters = Parameters(),
@@ -123,13 +123,13 @@ def upscale_images(
     """
 
     # sanitize input list
-    input_paths = _sanitize_input_paths(input_paths)
+    _input_paths: 'List[Path]' = _sanitize_input_paths(input_paths)
 
     # if destination path unspecified
     if output_path is None:
 
         # destination path is first input file's parent directory
-        output_path = input_paths[0].parent
+        output_path = _input_paths[0].parent
 
     # if destination path doesn't exist
     if not output_path.exists():
@@ -169,7 +169,7 @@ def upscale_images(
             )
 
     # process each of the files in the list
-    for path in input_paths:
+    for path in _input_paths:
 
         # anime4k load and process image
         ac_object.load_image(str(path))
