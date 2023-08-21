@@ -1,12 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Name: PyAnime4K error
-Author: TianZerL
-Editor: K4YT3X
-"""
-
-from pyanime4k.wrapper import *
+from .wrapper import AC_OK, AC_ERROR_NULL_INSTANCE, AC_ERROR_NULL_PARAMETERS, AC_ERROR_NULL_Data, AC_ERROR_INIT_GPU, AC_ERROR_PORCESSOR_TYPE
+from .wrapper import AC_ERROR_LOAD_IMAGE, AC_ERROR_LOAD_VIDEO, AC_ERROR_INIT_VIDEO_WRITER, AC_ERROR_GPU_PROCESS
+from .wrapper import AC_ERROR_SAVE_TO_NULL_POINTER, AC_ERROR_NOT_YUV444, AC_ERROR_VIDEO_MODE_UNINIT, AC_ERROR_YUV444_AND_RGB32_AT_SAME_TIME
+from .wrapper import AC_ERROR_CUDA_NOT_SUPPORTED
 
 """
     typedef enum ac_error

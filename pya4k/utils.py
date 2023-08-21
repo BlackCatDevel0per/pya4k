@@ -1,18 +1,16 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Name: PyAnime4K utils
-Author: TianZerL
-Editor: TianZerL
-"""
-
-from pyanime4k import ffmpeg_handler
-import contextlib
 import os
+import contextlib
+from . import ffmpeg_handler
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Union
+    from pathlib import Path
 
 
 def migrate_audio_streams(
-    upscaled_video: str, original_video: str, output_path: str
+    upscaled_video: 'Union[str, Path]', original_video: 'Union[str, Path]', output_path: 'Union[str, Path]'
 ) -> None:
     """ migrate audio streams
 
@@ -32,3 +30,4 @@ def migrate_audio_streams(
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(upscaled_video)
+

@@ -1,22 +1,17 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Name: PyAnime4K FFmpeg handler
-Author: TianZerL
-Editor: K4YT3X
-"""
+from pathlib import Path
 
-# built-in imports
-import pathlib
-
-# third-party imports
 import ffmpeg
 
+from typing import TYPE_CHECKING
 
-def migrate_audio_streams(upscaled_video: str, original_video: str, output_path: str):
-    upscaled_video = pathlib.Path(upscaled_video)
-    original_video = pathlib.Path(original_video)
-    output_path = pathlib.Path(output_path)
+if TYPE_CHECKING:
+    from typing import Union
+
+
+def migrate_audio_streams(upscaled_video: 'Union[str, Path]', original_video: 'Union[str, Path]', output_path: 'Union[str, Path]') -> None:
+    upscaled_video = Path(upscaled_video)
+    original_video = Path(original_video)
+    output_path = Path(output_path)
     upscaled_input = ffmpeg.input(str(upscaled_video.absolute()))
     original_input = ffmpeg.input(str(original_video.absolute()))
 

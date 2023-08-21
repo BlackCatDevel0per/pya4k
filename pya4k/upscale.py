@@ -1,25 +1,21 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Name: PyAnime4K upscaler
-Author: TianZerL
-Editor: K4YT3X
-"""
-
-# local imports
-from pyanime4k import ffmpeg_handler
-from pyanime4k.ac import AC
-from pyanime4k.ac import Parameters
-from pyanime4k.ac import Codec
-from pyanime4k import ac
-
-# built-in imports
-import pathlib
-import tempfile
 import os
+import tempfile
+from pathlib import Path
+
+from . import ac
+from . import ffmpeg_handler
+from .ac import AC
+from .ac import Parameters
+from .ac import Codec
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Union, Optional
+    from typing import List
 
 
-def _sanitize_input_paths(input_paths):
+def _sanitize_input_paths(input_paths: 'Union[str, Path, List[Path]]') -> 'List[Path]':
     """sanitize input file paths
 
     Args:
@@ -30,11 +26,11 @@ def _sanitize_input_paths(input_paths):
     # if input is single file in string format
     # convert it into pathlib.Path object
     if isinstance(input_paths, str):
-        sanitized_list.append(pathlib.Path(input_paths))
+        sanitized_list.append(Path(input_paths))
 
     # if the input is single file instead of a list
     # convert it into a list
-    elif isinstance(input_paths, pathlib.Path):
+    elif isinstance(input_paths, Path):
         sanitized_list.append(input_paths)
 
     # if the input is already a list
@@ -44,8 +40,8 @@ def _sanitize_input_paths(input_paths):
 
             # if the path is not a pathlib.Path object
             # convert it into an object
-            if not isinstance(path, pathlib.Path):
-                sanitized_list.append(pathlib.Path(path))
+            if not isinstance(path, Path):
+                sanitized_list.append(Path(path))
 
             # otherwise, the path is clean
             else:
@@ -56,11 +52,11 @@ def _sanitize_input_paths(input_paths):
 
 
 def show_upscaled_image(
-    source_path: pathlib.Path,
+    source_path: Path,
     parameters: Parameters = Parameters(),
     GPU_mode: bool = False,
     ACNet: bool = True,
-):
+) -> None:
     """display an image processed by Anime4K09 or ACNet
 
     Args:
@@ -106,11 +102,11 @@ def show_upscaled_image(
 def upscale_images(
     input_paths: list,
     output_suffix: str = "_output",
-    output_path: pathlib.Path = None,
+    output_path: 'Optional[Path]' = None,
     parameters: Parameters = Parameters(),
     GPU_mode: bool = False,
     ACNet: bool = True,
-):
+) -> None:
     """upscale a list of image files with Anime4K
 
     Args:
@@ -191,12 +187,12 @@ def upscale_images(
 def upscale_videos(
     input_paths: list,
     output_suffix: str = "_output",
-    output_path: pathlib.Path = None,
+    output_path: 'Optional[Path]' = None,
     parameters: Parameters = Parameters(),
     GPU_mode: bool = False,
     ACNet: bool = True,
-    codec: Codec = Codec.MP4V,
-):
+    codec: int = Codec.MP4V,
+) -> None:
     """upscale a list of video files with Anime4k
 
     Args:
@@ -266,7 +262,7 @@ def upscale_videos(
     for path in input_paths:
 
         # create temporary directory to save the upscaled video
-        temporary_directory = pathlib.Path(tempfile.mkdtemp())
+        temporary_directory = Path(tempfile.mkdtemp())
         temporary_video_file_path = temporary_directory.joinpath("temp.mp4")
 
         # process and save video file to temp/temp.mp4
@@ -278,7 +274,8 @@ def upscale_videos(
         ffmpeg_handler.migrate_audio_streams(
             upscaled_video=temporary_video_file_path,
             original_video=path,
-            output_path=(output_path.joinpath(path.stem + output_suffix + path.suffix)),
+            output_path=output_path.joinpath(path.stem + output_suffix + path.suffix),
         )
         # clean up temp video after we're done with it
         os.remove(temporary_video_file_path)
+
