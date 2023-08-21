@@ -11,7 +11,7 @@ git clone https://github.com/BlackCatDevel0per/pya4k.git $TEMP/pya4k
 apt-get update
 apt install -y --no-install-recommends libopencv-dev ocl-icd-opencl-dev cmake python3-pip
 
-git clone https://github.com/TianZerL/Anime4KCPP.git $TEMP/anime4kcpp
+git clone -b v2.5.0 https://github.com/TianZerL/Anime4KCPP.git $TEMP/anime4kcpp
 
 mkdir -v $TEMP/anime4kcpp/build
 cd $TEMP/anime4kcpp/build

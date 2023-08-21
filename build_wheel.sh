@@ -31,7 +31,7 @@ if [ ! -e $BINARY ]; then
 
 	mkdir -v anime4kcpp/build
 	cd anime4kcpp/build
-	cmake  ..  # Standard
+	cmake $CMAKE_ARGS ..  # Standard
 	# cmake -DBuild_CLI=OFF -DBuild_C_wrapper=ON -DBuild_C_wrapper_with_core=ON -DEnable_CUDA=on ..  # CUDA (NVidia)
 	make -j$(nproc)
 fi
