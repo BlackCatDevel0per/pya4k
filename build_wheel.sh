@@ -4,19 +4,13 @@ if [[ ! $PYV ]]; then  # XD
 	PYV=3
 fi
 
-echo Python version: $PYV
+echo Selected python version: $PYV
 
 LIBDIR=$PWD
 
 PLATFORM=linux_x86_64
 BINARY=$LIBDIR/anime4kcpp/build/bin/libac.so
 
-CMAKE_ARGS="-DBuild_CLI=OFF -DBuild_C_wrapper=ON -DBuild_Static_C_Wrapper -DBuild_C_wrapper_with_core=ON"
-
-if [ "$2" == "cuda" ]; then
-	CMAKE_ARGS="${CMAKE_ARGS} -DEnable_CUDA=ON"
-	echo building with cuda..
-fi
 
 echo "Removing temps.."
 
@@ -31,8 +25,12 @@ if [ ! -e $BINARY ]; then
 
 	mkdir -v anime4kcpp/build
 	cd anime4kcpp/build
-	cmake $CMAKE_ARGS ..  # Standard
-	# cmake -DBuild_CLI=OFF -DBuild_C_wrapper=ON -DBuild_C_wrapper_with_core=ON -DEnable_CUDA=on ..  # CUDA (NVidia)
+	if [ "$2" == "cuda" ]; then
+		cmake -DBuild_CLI:BOOL=OFF -DBuild_C_Wrapper:BOOL=ON -DBuild_Static_Core:BOOL=OFF -DEnable_CUDA:BOOL=ON ..
+		echo building with cuda..
+	else
+		cmake -DBuild_CLI:BOOL=OFF -DBuild_C_Wrapper:BOOL=ON -DBuild_Static_Core:BOOL=OFF ..
+	fi
 	make -j$(nproc)
 fi
 
