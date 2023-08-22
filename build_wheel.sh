@@ -42,6 +42,35 @@ fi
 rm -rf $LIBDIR/dist/*.whl
 rm -rf $LIBDIR/dist/*.tar.gz
 
+values_default=("Build_CLI=OFF" "Build_C_Wrapper=ON" "Build_Static_Core=OFF")
+
+values_o2=(
+	# Advanced libs [Need install!]
+	# "Build_VapourSynth_Plugin=ON"  # Better and modern then avisynthplus (Don't forget to install one of TBB, OpenMP, PPL or other parallel lib..)
+	# "Build_AviSynthPlus_Plugin=ON"  # (it's old..)
+	"Use_Eigen3=ON"
+
+	# "Enable_OpenCV_DNN=ON"  # Well for much RAM. Need external models, see anime4kcpp/core/models/ (copy near script path)
+	# "Enable_NCNN=ON"  # Well for much RAM..?
+
+	# Proc instructions
+	"Enable_AVX=ON"
+	"Enable_AVX2=ON"
+	"Enable_SSE42=ON"
+
+	# Proc optimizations
+	# "Ryzen_Optimization=ON"  # Uncomment if you have AMD CPU
+	"Enable_Fast_Math=ON"
+	"Native_Optimization=ON"
+	# Core lib optimizations
+	"Other_Optimization_For_Core=ON" "Other_Optimization_For_Other=ON"
+
+	# "Enable_OpenCL=OFF"  # will use CUDA Only..? (If have..)
+)
+values_o2+=(${values_default[@]})
+values+=(${values_o2[@]})
+
+
 ##
 if [ ! -e $BIN_LIBAC ]; then
 	git clone https://github.com/TianZerL/Anime4KCPP.git anime4kcpp
@@ -53,57 +82,22 @@ if [ ! -e $BIN_LIBAC ]; then
 	cd build
 	
 	# We can do this stuff by passing "cmake -DSomeOption=SomeVal .." but the cmake options sometimes don't work with these args..
-	if [ "$2" == "cuda" ]; then
-		values=(
-			"Build_CLI=OFF" "Build_C_Wrapper=ON" "Build_Static_Core=OFF" "Enable_CUDA=ON"
-			# Advanced options for common use (on google colab for example..)
-			"Use_Eigen3=ON"
-
-			# Proc instructions
-			"Enable_AVX=ON"
-			"Enable_AVX2=ON"
-			"Enable_SSE42=ON"
-
-			# Proc optimizations
-			# "Ryzen_Optimization=ON"  # Uncomment if you have AMD CPU
-			"Enable_Fast_Math=ON"
-			"Native_Optimization=ON"
-			# Core lib optimizations
-			"Other_Optimization_For_Core=ON" "Other_Optimization_For_Other=ON"
-
-			# "Enable_OpenCL=OFF"  # will use CUDA Only..? (If have..)
-			)
+	if [ "$2" == "CUDA" ]; then
+		# Advanced options for common use (on google colab for example..)
+		values+=("Enable_CUDA=ON")
 		echo building with cuda..
 	# build with some plugins & optimizations..
 	elif [ "$2" == "O2" ]; then
-		values=(
-			"Build_CLI=OFF" "Build_C_Wrapper=ON" "Build_Static_Core=OFF" "Enable_CUDA=OFF"
-
-			# Advanced libs [Need install!]
-			# "Build_VapourSynth_Plugin=ON"  # Better and modern then avisynthplus (Don't forget to install one of TBB, OpenMP, PPL or other parallel lib..)
-			# "Build_AviSynthPlus_Plugin=ON"  # (it's old..)
-			"Use_Eigen3=ON"
-
-			# "Enable_OpenCV_DNN=ON"  # Well for much RAM. Need external models, see anime4kcpp/core/models/ (copy near script path)
-			# "Enable_NCNN=ON"  # Well for much RAM..?
-
-			# Proc instructions
-			"Enable_AVX=ON"
-			"Enable_AVX2=ON"
-			"Enable_SSE42=ON"
-
-			# Proc optimizations
-			# "Ryzen_Optimization=ON"  # Uncomment if you have AMD CPU
-			"Enable_Fast_Math=ON"
-			"Native_Optimization=ON"
-			# Core lib optimizations
-			"Other_Optimization_For_Core=ON" "Other_Optimization_For_Other=ON"
-
-			# "Enable_OpenCL=OFF"  # will use CUDA Only..? (If have..)
-		)
+		values+=("Enable_CUDA=OFF")
 		echo building with some optimizations..
+	
+	# build with some plugins & optimizations, but no parallel tasks.. (Use it If you don't have much RAM or VRAM..)
+	elif [ "$2" == "O2_NOP" ]; then
+		values+=("Enable_CUDA=OFF")
+		values+=("Disable_Parallel=ON")
+		echo building with some optimizations and NO Parallel..
 	else
-		values=("Build_CLI=OFF" "Build_C_Wrapper=ON" "Build_Static_Core=OFF" "Enable_CUDA=OFF")
+		values=(${values_default[@]})
 	fi
 
 	for value in "${values[@]}"; do

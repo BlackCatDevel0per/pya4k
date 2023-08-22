@@ -194,6 +194,7 @@ def upscale_videos(
     ACNet: bool = True,
     codec: int = Codec.MP4V,
 ) -> None:
+    # FIXME: Too many RAM usage because too many parallel tasks.. Make limit! or etc.
     """upscale a list of video files with Anime4k
 
     Args:
@@ -225,6 +226,7 @@ def upscale_videos(
         output_path.mkdir(parents=True, exist_ok=True)
 
     # else if it already exists but isn't a directory
+    # ??
     elif not output_path.is_dir():
         raise FileExistsError("destination path already exists and isn't a directory")
 
