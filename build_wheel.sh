@@ -81,16 +81,21 @@ if [ ! -e $BIN_LIBAC ]; then
 	mkdir -v build
 	cd build
 	
+	# TODO: Normally parse args..
 	# We can do this stuff by passing "cmake -DSomeOption=SomeVal .." but the cmake options sometimes don't work with these args..
 	if [ "$2" == "CUDA" ]; then
 		# Advanced options for common use (on google colab for example..)
 		values+=("Enable_CUDA=ON")
 		echo building with cuda..
+	elif [ "$2" == "CUDA_NOP" ]; then
+		# Advanced options for common use (on google colab for example..)
+		values+=("Enable_CUDA=ON")
+		values+=("Disable_Parallel=ON")
+		echo building with cuda..
 	# build with some plugins & optimizations..
 	elif [ "$2" == "O2" ]; then
 		values+=("Enable_CUDA=OFF")
 		echo building with some optimizations..
-	
 	# build with some plugins & optimizations, but no parallel tasks.. (Use it If you don't have much RAM or VRAM..)
 	elif [ "$2" == "O2_NOP" ]; then
 		values+=("Enable_CUDA=OFF")
