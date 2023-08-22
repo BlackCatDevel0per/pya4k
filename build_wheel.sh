@@ -14,6 +14,7 @@ BINARY=$LIBDIR/anime4kcpp/build/bin/libac.so
 
 echo "Removing temps.."
 
+
 if [ ! -e $BINARY ]; then
 	rm -rf $LIBDIR/anime4kcpp/build/*
 fi
@@ -25,12 +26,26 @@ if [ ! -e $BINARY ]; then
 
 	mkdir -v anime4kcpp/build
 	cd anime4kcpp/build
+	
+	# We can do this stuff by passing "cmake -DSomeOption=SomeVal .." but the cmake options sometimes don't work with these args..
 	if [ "$2" == "cuda" ]; then
-		cmake -DBuild_CLI:BOOL=OFF -DBuild_C_Wrapper:BOOL=ON -DBuild_Static_Core:BOOL=OFF -DEnable_CUDA:BOOL=ON ..
+		values=("Build_CLI=OFF" "Build_C_Wrapper=ON" "Build_Static_Core=OFF" "Enable_CUDA=ON")
 		echo building with cuda..
 	else
-		cmake -DBuild_CLI:BOOL=OFF -DBuild_C_Wrapper:BOOL=ON -DBuild_Static_Core:BOOL=OFF ..
+		values=("Build_CLI=OFF" "Build_C_Wrapper=ON" "Build_Static_Core=OFF" "Enable_CUDA=OFF")
 	fi
+
+	for value in "${values[@]}"; do
+		# Split the value into the name and the new value
+		key=$(echo "$value" | cut -d "=" -f 1)
+		value=$(echo "$value" | cut -d "=" -f 2)
+
+		# Replace the old value with the new value using regular expression
+		sed -i -r "s/(option\($key\s*\".*\"\s*)(ON|OFF)\)/\1$value)/g" ../CMakeLists.txt
+
+	done
+
+	cmake ..
 	make -j$(nproc)
 fi
 
