@@ -140,8 +140,8 @@ print(a.get_processor_info())
 You may also create a low-level AC object and handle each of the steps manually.
 
 ```python
-from pya4k import ac
 import pya4k
+from pya4k import ac
 
 parameters = ac.Parameters()
 # enable HDN for ACNet

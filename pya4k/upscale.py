@@ -5,6 +5,7 @@ from pathlib import Path
 from . import ac
 from . import ffmpeg_handler
 from .ac import AC
+from .ac import VideoProcessor
 from .ac import Parameters
 from .ac import Codec
 
@@ -185,7 +186,7 @@ def upscale_images(
 
 
 def upscale_videos(
-    input_paths: list,
+    input_paths: 'Union[str, Path, List[Union[str, Path]]]',
     output_suffix: str = "_output",
     output_path: 'Optional[Path]' = None,
     parameters: Parameters = Parameters(),
@@ -210,13 +211,13 @@ def upscale_videos(
     """
 
     # sanitize input list
-    input_paths = _sanitize_input_paths(input_paths)
+    input_paths_: 'List[Path]' = _sanitize_input_paths(input_paths)
 
     # if destination path unspecified
     if output_path is None:
 
         # destination path is first input file's parent directory
-        output_path = input_paths[0].parent
+        output_path = input_paths_[0].parent
 
     # if destination path doesn't exist
     if not output_path.exists():
@@ -226,9 +227,6 @@ def upscale_videos(
     # else if it already exists but isn't a directory
     elif not output_path.is_dir():
         raise FileExistsError("destination path already exists and isn't a directory")
-
-    # set parameters to video mode
-    parameters.videoMode = True
 
     # create anime4k object
     if GPU_mode:
@@ -258,18 +256,20 @@ def upscale_videos(
                 type=ac.ProcessorType.CPU_Anime4K09,
             )
 
+    video_processor = VideoProcessor(ac_object)
+
     # process each of the files in the list
-    for path in input_paths:
+    for path in input_paths_:
 
         # create temporary directory to save the upscaled video
         temporary_directory = Path(tempfile.mkdtemp())
         temporary_video_file_path = temporary_directory.joinpath("temp.mp4")
 
         # process and save video file to temp/temp.mp4
-        ac_object.load_video(str(path))
-        ac_object.set_save_video_info(str(temporary_video_file_path), codec)
-        ac_object.process_with_progress()
-        ac_object.save_video()
+        video_processor.load_video(str(path))
+        video_processor.set_save_video_info(str(temporary_video_file_path), codec)
+        video_processor.process_with_progress()
+        video_processor.save_video()
 
         ffmpeg_handler.migrate_audio_streams(
             upscaled_video=temporary_video_file_path,
